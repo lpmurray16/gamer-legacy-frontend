@@ -18,17 +18,17 @@ export class SignIn {
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
+    password: ['', [Validators.required]],
   });
 
   async onSubmit() {
     if (this.form.invalid) return;
 
-    const { email, password } = this.form.value;
+    const { email, password } = this.form.getRawValue();
 
     try {
       this.errorMessage = '';
-      await this.authService.login(email!, password!);
+      await this.authService.login(email || '', password || '');
     } catch (err: any) {
       this.errorMessage = err.message || 'Invalid email or password';
     }

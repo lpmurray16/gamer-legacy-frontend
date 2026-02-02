@@ -4,11 +4,11 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private pb: PocketBase;
-  
+  public pb: PocketBase;
+
   // Signal to track the current user
   private _currentUser = signal<AuthModel | null>(null);
   public currentUser = this._currentUser.asReadonly();
@@ -16,7 +16,7 @@ export class AuthService {
 
   constructor(private router: Router) {
     this.pb = new PocketBase(environment.pocketbaseUrl);
-    
+
     // Initialize user from local storage if available
     this._currentUser.set(this.pb.authStore.model);
 
@@ -26,7 +26,12 @@ export class AuthService {
     });
   }
 
-  async register(data: any) {
+  async register(data: {
+    email: string;
+    password: string;
+    passwordConfirm: string;
+    name?: string;
+  }) {
     try {
       const record = await this.pb.collection('users').create(data);
       // Optional: automatically login after registration

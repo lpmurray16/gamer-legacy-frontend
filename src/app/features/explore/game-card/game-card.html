@@ -2,11 +2,32 @@
   <img [src]="game.background_image || 'assets/placeholder.jpg'" [alt]="game.name" class="card-image" loading="lazy">
   <div class="card-content">
     <h3 class="card-title">{{ game.name }}</h3>
+
+    <div class="card-actions">
+      <button class="btn-add" (click)="toggleMenu($event)" [class.active]="isMenuOpen()" [class.saved]="!!userStatus">
+        @if (isAdding()) {
+        ...
+        } @else if (userStatus) {
+        ✓ {{ userStatus | uppercase }}
+        } @else {
+        + ADD
+        }
+      </button>
+
+      @if (isMenuOpen()) {
+      <div class="dropdown-menu">
+        <button class="btn-dropdown-item" (click)="addToCollection('Played', $event)">PLAYED</button>
+        <button class="btn-dropdown-item" (click)="addToCollection('Playing', $event)">PLAYING</button>
+        <button class="btn-dropdown-item" (click)="addToCollection('Watching', $event)">WATCHING</button>
+      </div>
+      }
+    </div>
+
     <div class="card-meta">
       <span>{{ game.released | date:'mediumDate' }}</span>
       <div style="display: flex; gap: 0.5rem; align-items: center;">
         @if (game.metacritic) {
-          <span class="metacritic" title="Metascore">{{ game.metacritic }}</span>
+        <span class="metacritic" title="Metascore">{{ game.metacritic }}</span>
         }
         <span class="rating">★ {{ game.rating | number:'1.1-1' }}</span>
       </div>

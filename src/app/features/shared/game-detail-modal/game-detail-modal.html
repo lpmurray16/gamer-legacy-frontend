@@ -1,0 +1,98 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-content" (click)="stopPropagation($event)">
+    <div class="modal-header">
+      @if (loading()) {
+      <h3>> LOADING_DATA...</h3>
+      } @else if (game()) {
+      <h3>> {{ game()!.name | uppercase }}</h3>
+      }
+      <button class="close-btn btn-secondary btn-sm" (click)="onClose()">X</button>
+    </div>
+
+    <div class="modal-body">
+      @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>ACCESSING MAINFRAME...</p>
+      </div>
+      } @else if (error()) {
+      <div class="error-state">
+        <p class="error-text">> ERROR: {{ error() }}</p>
+      </div>
+      } @else if (game()) {
+      <div class="game-details">
+        <div class="hero-image" [style.background-image]="'url(' + game()!.background_image + ')'"></div>
+
+        <div class="stats-bar">
+          <div class="stat">
+            <span class="label">RATING</span>
+            <span class="value">{{ game()!.rating | number:'1.1-1' }}/5.0</span>
+          </div>
+          <div class="stat">
+            <span class="label">RELEASED</span>
+            <span class="value">{{ game()!.released | date:'mediumDate' | uppercase }}</span>
+          </div>
+          @if (game()!.metacritic) {
+          <div class="stat">
+            <span class="label">METACRITIC</span>
+            <span class="value highlight">{{ game()!.metacritic }}</span>
+          </div>
+          }
+        </div>
+
+        <div class="d-flex justify-center gap-3 pt-3">
+          <button class="btn-link" [class.active]="userGameStatus() === 'Played'" (click)="updateStatus('Played')">
+            {{ userGameStatus() === 'Played' ? '> PLAYED' : 'Played' }}
+          </button>
+          <button class="btn-link" [class.active]="userGameStatus() === 'Playing'" (click)="updateStatus('Playing')">
+            {{ userGameStatus() === 'Playing' ? '> PLAYING' : 'Playing' }}
+          </button>
+          <button class="btn-link" [class.active]="userGameStatus() === 'Watching'" (click)="updateStatus('Watching')">
+            {{ userGameStatus() === 'Watching' ? '> WATCHING' : 'Watching' }}
+          </button>
+        </div>
+
+        <div class="description">
+          <h4>> MISSION BRIEFING <a class="read-more-action" (click)="showingFullDesc = !showingFullDesc">
+              {{ showingFullDesc ? 'SHOW LESS' : 'READ MORE' }}
+            </a></h4>
+
+          <p [class.full-text]="showingFullDesc" class="truncate-text">{{ game()!.description_raw }}</p>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <h4>> GENRES</h4>
+            <div class="tags">
+              @for (genre of game()!.genres; track genre.name) {
+              <span class="tag">{{ genre.name | uppercase }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="meta-item">
+            <h4>> PLATFORMS</h4>
+            <div class="tags">
+              @for (p of game()!.platforms; track p.platform.name) {
+              <span class="tag">{{ p.platform.name | uppercase }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="meta-item">
+            <h4>> LINKS</h4>
+            <div class="links">
+              @if (game()!.website) {
+              <a [href]="game()!.website" target="_blank" class="btn-link">OFFICIAL SITE</a>
+              }
+              @if (game()!.reddit_url) {
+              <a [href]="game()!.reddit_url" target="_blank" class="btn-link">REDDIT</a>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

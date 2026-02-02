@@ -1,0 +1,59 @@
+<div class="top-games-container">
+  <div class="header-card">
+    <div>
+      <h2>> TOP 30 RANKINGS</h2>
+      <p style="margin: 0; color: var(--gray-400)">DEFINE YOUR LEGACY</p>
+    </div>
+    <a routerLink="/home" class="btn btn-secondary btn-sm">
+      < BACK TO DASHBOARD</a>
+  </div>
+
+  <div class="rank-grid">
+    @for (slot of slots(); track slot.rank) {
+    <div class="rank-card" [class.ranked]="slot.game">
+      <div class="rank-number">#{{ slot.rank }}</div>
+
+      <div class="game-slot">
+        @if (slot.game) {
+        <img [src]="slot.game['game_image']" class="game-thumb" alt="cover">
+        <div class="game-info">
+          <h4>{{ slot.game['game_name'] }}</h4>
+        </div>
+        <button class="btn-remove" (click)="removeRank(slot.game!)" [disabled]="processing()">x</button>
+        } @else {
+        <div class="game-info empty-slot">
+          [ EMPTY SLOT ]
+        </div>
+        <button class="btn-add" (click)="openSelector(slot.rank)" [disabled]="processing()">+ SELECT</button>
+        }
+      </div>
+    </div>
+    }
+  </div>
+
+  @if (showSelector()) {
+  <div class="game-selector-modal" (click)="closeSelector()">
+    <div class="selector-content" (click)="$event.stopPropagation()">
+      <div class="selector-header">
+        <span>> SELECT GAME FOR RANK #{{ selectedRank() }}</span>
+        <button class="btn-close" style="width: 30px; height: 30px; font-size: 1rem;"
+          (click)="closeSelector()">X</button>
+      </div>
+      <div class="selector-list">
+        @for (game of unrankedGames(); track game.id) {
+        <div class="selector-item" (click)="selectGame(game)">
+          <img [src]="game['game_image']" alt="cover">
+          <span>{{ game['game_name'] }}</span>
+        </div>
+        }
+        @if (unrankedGames().length === 0) {
+        <div style="padding: 2rem; text-align: center; color: var(--gray-400)">
+          NO UNRANKED GAMES AVAILABLE.<br>
+          ADD MORE GAMES FROM EXPLORE PAGE.
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

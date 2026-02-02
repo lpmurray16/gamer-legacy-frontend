@@ -1,0 +1,68 @@
+$space-base: 0.25rem;
+$space-amounts: (
+    0: 0,
+    1: $space-base,
+    // 0.25rem
+    2: $space-base * 2,
+    // 0.5rem
+    3: $space-base * 4,
+    // 1rem
+    4: $space-base * 6,
+    // 1.5rem
+    5: $space-base * 8,
+    // 2rem
+    6: $space-base * 12,
+    // 3rem
+    auto: auto
+);
+
+$sides: (
+    "t": "top",
+    "b": "bottom",
+    "l": "left",
+    "r": "right"
+);
+
+@each $key, $value in $space-amounts {
+
+    // All sides
+    .m-#{$key} {
+        margin: $value;
+    }
+
+    .p-#{$key} {
+        padding: $value;
+    }
+
+    // X and Y axis
+    .mx-#{$key} {
+        margin-left: $value;
+        margin-right: $value;
+    }
+
+    .my-#{$key} {
+        margin-top: $value;
+        margin-bottom: $value;
+    }
+
+    .px-#{$key} {
+        padding-left: $value;
+        padding-right: $value;
+    }
+
+    .py-#{$key} {
+        padding-top: $value;
+        padding-bottom: $value;
+    }
+
+    // Individual sides
+    @each $side-key, $side-value in $sides {
+        .m#{$side-key}-#{$key} {
+            margin-#{$side-value}: $value;
+        }
+
+        .p#{$side-key}-#{$key} {
+            padding-#{$side-value}: $value;
+        }
+    }
+}

@@ -1,38 +1,41 @@
 <div class="container">
+  <div class="search-section">
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="search()" placeholder="SEARCH DATABASE...">
+      <button class="btn-search" (click)="search()">>></button>
+    </div>
+  </div>
+
   <div class="tabs">
-    <button 
-      class="tab-btn" 
-      [class.active]="activeTab() === 'popular'"
-      (click)="setTab('popular')">
+    <button class="btn-tab" [class.active]="activeTab() === 'popular'" (click)="setTab('popular')">
       > POPULAR
     </button>
-    <button 
-      class="tab-btn" 
-      [class.active]="activeTab() === 'new'"
-      (click)="setTab('new')">
+    <button class="btn-tab" [class.active]="activeTab() === 'new'" (click)="setTab('new')">
       > NEW RELEASES
     </button>
-    <button 
-      class="tab-btn" 
-      [class.active]="activeTab() === 'classics'"
-      (click)="setTab('classics')">
+    <button class="btn-tab" [class.active]="activeTab() === 'classics'" (click)="setTab('classics')">
       > CLASSICS
     </button>
   </div>
 
   @if (loading()) {
-    <div class="loading">
-      > DOWNLOADING DATA...
-    </div>
+  <div class="loading">
+    > DOWNLOADING DATA...
+  </div>
   } @else if (error()) {
-    <div class="error">
-      {{ error() }}
-    </div>
+  <div class="error">
+    {{ error() }}
+  </div>
   } @else {
-    <div class="games-grid">
-      @for (game of games(); track game.id) {
-        <app-game-card [game]="game" />
-      }
-    </div>
+  <div class="games-grid">
+    @for (game of games(); track game.id) {
+    <app-game-card [game]="game" [userStatus]="userGameStatusMap().get(game.id) || null" (click)="openGame(game)"
+      style="cursor: pointer;" />
+    }
+  </div>
+  }
+
+  @if (selectedGameId()) {
+  <app-game-detail-modal [gameId]="selectedGameId()!" (close)="closeModal()" />
   }
 </div>

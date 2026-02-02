@@ -20,26 +20,26 @@ export class SignUp {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     passwordConfirm: ['', [Validators.required]],
-    name: ['', [Validators.required]]
+    name: ['', [Validators.required]],
   });
 
   async onSubmit() {
     if (this.form.invalid) return;
 
-    const { email, password, passwordConfirm, name } = this.form.value;
+    const { email, password, passwordConfirm, name } = this.form.getRawValue();
 
     if (password !== passwordConfirm) {
-      this.errorMessage = "Passwords do not match!";
+      this.errorMessage = 'Passwords do not match!';
       return;
     }
 
     try {
       this.errorMessage = '';
       await this.authService.register({
-        email,
-        password,
-        passwordConfirm,
-        name
+        email: email || '',
+        password: password || '',
+        passwordConfirm: passwordConfirm || '',
+        name: name || '',
       });
       // The service handles login redirect, but we can double check or show success
     } catch (err: any) {

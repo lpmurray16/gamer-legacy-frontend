@@ -5,6 +5,7 @@ import { SignIn } from './features/auth/sign-in/sign-in';
 import { SignUp } from './features/auth/sign-up/sign-up';
 import { Home } from './features/home/home';
 import { Explore } from './features/explore/explore';
+import { TopGames } from './features/top-games/top-games';
 
 const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -29,6 +30,11 @@ export const routes: Routes = [
   {
     path: 'explore',
     component: Explore,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'top-games',
+    component: TopGames,
     canActivate: [authGuard],
   },
 ];
