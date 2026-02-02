@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="card">
+    <h2>> LOAD GAME</h2>
+    
+    @if (errorMessage) {
+      <div style="color: var(--error-color); margin-bottom: 1rem; border: 2px solid var(--error-color); padding: 1rem;">
+        ERROR: {{ errorMessage }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">EMAIL ADDRESS</label>
+        <input id="email" type="email" formControlName="email" placeholder="Enter email...">
+      </div>
+
+      <div class="form-group">
+        <label for="password">PASSWORD</label>
+        <input id="password" type="password" formControlName="password" placeholder="********">
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <button type="submit" class="btn" [disabled]="form.invalid">START</button>
+      </div>
+    </form>
+
+    <div style="margin-top: 2rem; border-top: 1px solid var(--text-color); padding-top: 1rem;">
+      <p>NO SAVE DATA? <a routerLink="/sign-up">NEW GAME</a></p>
+    </div>
+  </div>
+</div>

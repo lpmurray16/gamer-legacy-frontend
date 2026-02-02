@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="card">
+    <h2>> ACCOUNT CREATED: WELCOME, PLAYER</h2>
+
+    @if (authService.currentUser(); as user) {
+    <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+      ID: <span style="color: var(--secondary-color)">{{ user.id }}</span><br>
+      EMAIL: <span style="color: var(--secondary-color)">{{ user['email'] }}</span><br>
+      USERNAME: <span style="color: var(--secondary-color)">{{ user['name'] }}</span>
+    </p>
+    }
+
+    <div style="border: 2px dashed var(--accent-color); padding: 1rem; margin-bottom: 2rem;">
+      <h3>> MISSION STATUS</h3>
+      <p>NO ACTIVE MISSIONS. EXPLORE THE WORLD TO FIND NEW QUESTS.</p>
+    </div>
+
+    <button class="btn btn-secondary" (click)="logout()">EXIT GAME</button>
+  </div>
+</div>

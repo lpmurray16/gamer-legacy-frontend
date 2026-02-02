@@ -1,0 +1,15 @@
+<div class="game-card">
+  <img [src]="game.background_image || 'assets/placeholder.jpg'" [alt]="game.name" class="card-image" loading="lazy">
+  <div class="card-content">
+    <h3 class="card-title">{{ game.name }}</h3>
+    <div class="card-meta">
+      <span>{{ game.released | date:'mediumDate' }}</span>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        @if (game.metacritic) {
+          <span class="metacritic" title="Metascore">{{ game.metacritic }}</span>
+        }
+        <span class="rating">★ {{ game.rating | number:'1.1-1' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
