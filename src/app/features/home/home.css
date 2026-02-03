@@ -8,10 +8,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  background: var(--surface-color);
-  border: var(--border-width) solid var(--text-color);
+  background: var(--surface);
+  border: var(--border-width) solid var(--text);
   padding: 1.5rem;
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--primary-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--primary);
 }
 
 .user-info {
@@ -43,16 +43,17 @@
   border: 1px solid transparent;
   border-bottom: none;
   transition: all 0.2s;
+  white-space: nowrap; /* Prevent wrapping */
 }
 
 .tabs-nav a:hover {
-  color: var(--primary-color);
+  color: var(--primary);
   background: rgba(0, 255, 0, 0.1);
 }
 
 .tabs-nav a.active {
-  color: var(--primary-color);
-  background: var(--surface-color);
+  color: var(--primary);
+  background: var(--surface);
   border: 1px solid #333;
   border-bottom: 2px solid #000; /* Match background */
   margin-bottom: -2px;
@@ -98,37 +99,43 @@
   .header-card h2 {
     font-size: 1.2rem;
     margin: 0;
-    text-align: center;
-  }
-
-  .user-info {
-    justify-content: space-between;
-    width: 100%;
-    padding-top: 1rem;
-    border-top: 1px solid #333;
   }
 
   .tabs-nav {
     overflow-x: auto;
-    padding-bottom: 5px;
-    margin: 0 -1rem 20px -1rem; /* Negative margin to span full width */
-    padding: 0 1rem 5px 1rem;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-right: -1rem; /* Adjust based on container padding */
+    padding-right: 1rem;
+    border-bottom: none; /* Optional: remove the full line if we go for pills */
+    padding-bottom: 0.5rem;
   }
 
   .tabs-nav::-webkit-scrollbar {
-    height: 4px;
+    display: none;
   }
 
-  .tabs-nav::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+  .tabs-nav a {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--text);
+    margin-bottom: 0.5rem;
+    background-color: var(--surface);
+  }
+
+  .tabs-nav a.active {
+    background-color: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+    border-bottom: 1px solid var(--primary);
+    margin-bottom: 0.5rem; /* Maintain spacing */
   }
 
   .actions-footer {
     flex-direction: column;
   }
 
-  .actions-footer button {
+  .actions-footer .btn {
     width: 100%;
   }
 }

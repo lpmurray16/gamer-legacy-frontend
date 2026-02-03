@@ -1,9 +1,15 @@
-<header
-  style="padding: 1rem; border-bottom: 2px solid var(--primary-color); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-  <h1 style="margin: 0; font-size: 1.5rem;">GAMER LEGACY</h1>
-  <nav>
-    <a routerLink="/home" routerLinkActive="active" style="margin-right: 1.5rem;">HOME</a>
-    <a routerLink="/explore" routerLinkActive="active">EXPLORE</a>
+<header>
+  <h1 class="logo">
+    <span class="logo-text-desktop">GAMER LEGACY</span>
+    <span class="logo-text-mobile">GL</span>
+  </h1>
+  <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle navigation">
+    ☰
+  </button>
+  <nav [class.open]="isMenuOpen()">
+    <a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">DASHBOARD</a>
+    <a routerLink="/explore" routerLinkActive="active" (click)="closeMenu()">EXPLORE</a>
+    <a routerLink="/top-games" routerLinkActive="active" (click)="closeMenu()">TOP 30</a>
   </nav>
 </header>
 

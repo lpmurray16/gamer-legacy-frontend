@@ -6,7 +6,7 @@
   text-align: center;
   padding: 40px;
   color: var(--text-muted);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-main);
   border: 1px dashed var(--border-color);
 }
 
@@ -19,7 +19,7 @@
 .game-card {
   position: relative;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--primary-color-dim);
+  border: 1px solid var(--primary);
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
@@ -28,8 +28,8 @@
 
 .game-card:hover {
   transform: translateY(-2px);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3); /* Using primary color rgb approx */
 }
 
 .game-card img {
@@ -51,28 +51,28 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: normal;
-  color: var(--text-color);
+  color: var(--text);
 }
 
 .status-badge {
   font-size: 0.7rem;
   padding: 2px 6px;
   border-radius: 2px;
-  background: #333;
-  color: #aaa;
+  background: var(--border-color);
+  color: var(--text-muted);
 }
 
 .status-badge.playing {
-  color: #4caf50;
-  border: 1px solid #4caf50;
+  color: var(--success);
+  border: 1px solid var(--success);
 }
 .status-badge.played {
-  color: #2196f3;
-  border: 1px solid #2196f3;
+  color: var(--info);
+  border: 1px solid var(--info);
 }
 .status-badge.watching {
-  color: #ffc107;
-  border: 1px solid #ffc107;
+  color: var(--warning);
+  border: 1px solid var(--warning);
 }
 
 .btn-remove {
@@ -81,7 +81,7 @@
   right: 5px;
   background: rgba(0, 0, 0, 0.7);
   border: none;
-  color: #ff4444;
+  color: var(--danger);
   width: 24px;
   height: 24px;
   border-radius: 50%;

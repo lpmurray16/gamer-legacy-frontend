@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { UserGamesService } from '../../services/user-games';
 import { RecordModel } from 'pocketbase';
 
@@ -12,7 +13,7 @@ interface RankSlot {
 @Component({
   selector: 'app-top-games',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './top-games.html',
   styleUrl: './top-games.css',
 })
@@ -44,10 +45,14 @@ export class TopGames implements OnInit {
 
   showSelector = signal(false);
   selectedRank = signal<number | null>(null);
+  searchQuery = signal('');
 
   unrankedGames = computed(() => {
+    const query = this.searchQuery().toLowerCase();
     // Filter out games that already have a rank > 0
-    return this.userGames().filter((g) => !g['rank'] || g['rank'] === 0);
+    return this.userGames()
+      .filter((g) => !g['rank'] || g['rank'] === 0)
+      .filter((g) => g['game_name'].toLowerCase().includes(query));
   });
 
   ngOnInit() {
@@ -65,12 +70,14 @@ export class TopGames implements OnInit {
 
   openSelector(rank: number) {
     this.selectedRank.set(rank);
+    this.searchQuery.set(''); // Reset search query
     this.showSelector.set(true);
   }
 
   closeSelector() {
     this.showSelector.set(false);
     this.selectedRank.set(null);
+    this.searchQuery.set(''); // Reset search query
   }
 
   async selectGame(game: RecordModel) {

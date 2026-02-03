@@ -10,6 +10,15 @@ import { environment } from '../environments/environment';
 })
 export class App implements OnInit {
   protected readonly title = signal('gamer-legacy-frontend');
+  protected isMenuOpen = signal(false);
+
+  toggleMenu() {
+    this.isMenuOpen.update(value => !value);
+  }
+
+  closeMenu() {
+    this.isMenuOpen.set(false);
+  }
 
   ngOnInit() {
     console.log('Environment Production:', environment.production);

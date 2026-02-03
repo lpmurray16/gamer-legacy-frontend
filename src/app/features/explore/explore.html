@@ -38,11 +38,11 @@
   </div>
 
   @if (hasMore()) {
-  <div class="load-more-container">
+  <div class="d-flex justify-center p-3">
     @if (loading()) {
     <div class="loading-more">> DOWNLOADING MORE DATA...</div>
     } @else {
-    <button class="btn-load-more" (click)="loadMore()">> LOAD MORE</button>
+    <button class="btn btn-primary" (click)="loadMore()">> LOAD MORE</button>
     }
   </div>
   }

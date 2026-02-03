@@ -1,1 +1,98 @@
 /* App component specific styles */
+
+/* Header Styles */
+header {
+  padding: 1rem;
+  border-bottom: 2px solid var(--primary);
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--bg); /* Ensure content doesn't show through */
+}
+
+/* Logo Styles */
+.logo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* Desktop Navigation */
+nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+nav a {
+  margin-right: 0; /* Remove inline margin */
+  display: block; /* Helps with click area */
+}
+
+/* Hamburger Menu Button (Hidden by default) */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+  .logo-text-desktop {
+    display: none;
+  }
+
+  .logo-text-mobile {
+    display: inline;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--surface);
+    flex-direction: column;
+    padding: 0; /* Reset padding to handle links edge-to-edge if needed */
+    border-bottom: 2px solid var(--primary);
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  nav.open {
+    display: flex;
+  }
+
+  nav a {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    width: 100%; /* Ensure full width click area */
+    box-sizing: border-box;
+  }
+
+  nav a:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .logo-text-desktop {
+    display: inline;
+  }
+
+  .logo-text-mobile {
+    display: none;
+  }
+}

@@ -1,28 +1,12 @@
 /* Dark Neobrutalism + Retro Video Game Vibes */
+@use 'variables';
 @use 'flex';
 @use 'spacing';
 @use 'buttons';
 
-:root {
-  --bg-color: #050505;
-  --text-color: #e0e0e0;
-  --primary-color: #00ff41;
-  /* Matrix/Retro Terminal Green */
-  --secondary-color: #ff00ff;
-  /* Hot Pink */
-  --accent-color: #ffff00;
-  /* Yellow */
-  --error-color: #ff3333;
-  --surface-color: #1a1a1a;
-
-  --border-width: 3px;
-  --shadow-offset: 4px;
-  --font-main: 'Courier New', Courier, monospace;
-}
-
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: var(--font-main);
   margin: 0;
   padding: 0;
@@ -35,12 +19,12 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface-color);
+  background: var(--surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border: 2px solid var(--surface-color);
+  background: var(--primary);
+  border: 2px solid var(--surface);
 }
 
 /* Typography */
@@ -53,19 +37,19 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-  color: var(--primary-color);
+  color: var(--primary);
   text-shadow: 2px 2px 0px rgba(0, 255, 65, 0.3);
 }
 
 a {
-  color: var(--secondary-color);
+  color: var(--secondary);
   text-decoration: none;
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
 
 a:hover {
-  border-bottom-color: var(--secondary-color);
+  border-bottom-color: var(--secondary);
   background-color: rgba(255, 0, 255, 0.1);
 }
 
@@ -77,10 +61,10 @@ a:hover {
 }
 
 .card {
-  background-color: var(--surface-color);
-  border: var(--border-width) solid var(--text-color);
+  background-color: var(--surface);
+  border: var(--border-width) solid var(--text);
   padding: 2rem;
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--primary-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--primary);
   margin-bottom: 2rem;
 }
 
@@ -92,7 +76,7 @@ label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: var(--accent-color);
+  color: var(--accent);
 }
 
 input {
