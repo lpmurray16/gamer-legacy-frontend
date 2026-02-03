@@ -102,4 +102,26 @@ export class TopGames implements OnInit {
       this.processing.set(false);
     }
   }
+
+  shareBtnText = signal('> SHARE LIST');
+
+  async copyShareLink() {
+    try {
+      this.processing.set(true);
+      const code = await this.userGamesService.generateShareCode();
+      const url = `${window.location.origin}/share/${code}`;
+      await navigator.clipboard.writeText(url);
+
+      // UX Feedback
+      this.shareBtnText.set('> COPIED!');
+      setTimeout(() => {
+        this.shareBtnText.set('> SHARE LIST');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to generate share link', err);
+      alert('Could not generate share link. Please try again.');
+    } finally {
+      this.processing.set(false);
+    }
+  }
 }

@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Observable, from } from 'rxjs';
+import { Observable, from, tap, firstValueFrom } from 'rxjs';
 import { RecordModel } from 'pocketbase';
 import { Game } from './game';
 
@@ -21,8 +21,36 @@ export interface UserGame {
 export class UserGamesService {
   private authService = inject(AuthService);
 
+  // State signals
+  games = signal<RecordModel[]>([]);
+  loading = signal<boolean>(false);
+
   private get pb() {
     return this.authService.pb;
+  }
+
+  loadGames() {
+    this.loading.set(true);
+    const userId = this.authService.currentUser()?.id;
+    if (!userId) {
+      this.loading.set(false);
+      return;
+    }
+
+    this.pb
+      .collection('user_games')
+      .getFullList({
+        filter: `user = "${userId}"`,
+        sort: '-created',
+      })
+      .then((games) => {
+        this.games.set(games);
+        this.loading.set(false);
+      })
+      .catch((err) => {
+        console.error('Failed to load user games', err);
+        this.loading.set(false);
+      });
   }
 
   getUserGames(): Observable<RecordModel[]> {
@@ -34,7 +62,51 @@ export class UserGamesService {
         filter: `user = "${userId}"`,
         sort: '-created',
       }),
-    );
+    ).pipe(tap((games) => this.games.set(games)));
+  }
+
+  // --- Public Sharing ---
+
+  async generateShareCode(): Promise<string> {
+    const user = this.authService.currentUser();
+    if (!user) throw new Error('No user');
+
+    // If user already has a code, return it
+    if (user['share_code']) return user['share_code'];
+
+    // Generate a random 6-char code
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I, O, 0, 1 for clarity
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    // Save to user profile
+    // Note: This requires the 'share_code' field to exist in Users collection
+    const updatedUser = await this.pb.collection('users').update(user.id, {
+      share_code: code,
+    });
+
+    // Update local auth store
+    this.pb.authStore.save(this.pb.authStore.token, updatedUser);
+
+    return code;
+  }
+
+  async getGamesByShareCode(code: string): Promise<{ user: RecordModel; games: RecordModel[] }> {
+    // 1. Find user by share_code
+    // Note: Assuming 'share_code' is unique
+    const user = await this.pb.collection('users').getFirstListItem(`share_code="${code}"`);
+
+    if (!user) throw new Error('User not found');
+
+    // 2. Fetch their games (ranking only)
+    const games = await this.pb.collection('user_games').getFullList({
+      filter: `user = "${user.id}" && rank > 0`,
+      sort: 'rank',
+    });
+
+    return { user, games };
   }
 
   async addGameToCollection(game: Game, status: GameStatus): Promise<RecordModel> {

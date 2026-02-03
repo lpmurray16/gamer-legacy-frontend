@@ -44,15 +44,16 @@ export class GameService {
     return new HttpParams().set('key', this.apiKey);
   }
 
-  getPopularGames(): Observable<GameResponse> {
+  getPopularGames(page: number = 1): Observable<GameResponse> {
     const params = this.getBaseParams()
       .set('ordering', '-added') // Popularity by most added to libraries
-      .set('page_size', '12');
+      .set('page_size', '12')
+      .set('page', page.toString());
 
     return this.http.get<GameResponse>(this.apiUrl, { params });
   }
 
-  getNewGames(): Observable<GameResponse> {
+  getNewGames(page: number = 1): Observable<GameResponse> {
     const currentDate = new Date();
     const lastYear = new Date();
     lastYear.setFullYear(currentDate.getFullYear() - 1);
@@ -62,22 +63,46 @@ export class GameService {
     const params = this.getBaseParams()
       .set('dates', dateString)
       .set('ordering', '-released')
-      .set('page_size', '12');
+      .set('page_size', '12')
+      .set('page', page.toString());
 
     return this.http.get<GameResponse>(this.apiUrl, { params });
   }
 
-  getClassicGames(): Observable<GameResponse> {
+  getUpcomingGames(page: number = 1): Observable<GameResponse> {
+    const currentDate = new Date();
+    const nextYear = new Date();
+    nextYear.setFullYear(currentDate.getFullYear() + 1);
+
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const dateString = `${tomorrow.toISOString().split('T')[0]},${nextYear.toISOString().split('T')[0]}`;
+
+    const params = this.getBaseParams()
+      .set('dates', dateString)
+      .set('ordering', '-added')
+      .set('page_size', '12')
+      .set('page', page.toString());
+
+    return this.http.get<GameResponse>(this.apiUrl, { params });
+  }
+
+  getClassicGames(page: number = 1): Observable<GameResponse> {
     const params = this.getBaseParams()
       .set('dates', '1980-01-01,2000-12-31')
       .set('ordering', '-metacritic') // Highest rated classics
-      .set('page_size', '12');
+      .set('page_size', '12')
+      .set('page', page.toString());
 
     return this.http.get<GameResponse>(this.apiUrl, { params });
   }
 
-  searchGames(query: string): Observable<GameResponse> {
-    const params = this.getBaseParams().set('search', query).set('page_size', '12');
+  searchGames(query: string, page: number = 1): Observable<GameResponse> {
+    const params = this.getBaseParams()
+      .set('search', query)
+      .set('page_size', '12')
+      .set('page', page.toString());
 
     return this.http.get<GameResponse>(this.apiUrl, { params });
   }

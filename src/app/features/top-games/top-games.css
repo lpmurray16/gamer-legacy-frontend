@@ -73,6 +73,11 @@
   margin: 0;
   font-size: 1rem;
   color: var(--text-color);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
 }
 
 .empty-slot {

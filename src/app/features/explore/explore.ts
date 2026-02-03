@@ -5,7 +5,7 @@ import { GameCard } from './game-card/game-card';
 import { UserGamesService, GameStatus } from '../../services/user-games';
 import { GameDetailModal } from '../shared/game-detail-modal/game-detail-modal';
 
-type Tab = 'popular' | 'new' | 'classics' | 'search';
+type Tab = 'popular' | 'new' | 'upcoming' | 'classics' | 'search';
 
 @Component({
   selector: 'app-explore',
@@ -25,10 +25,12 @@ export class Explore implements OnInit {
   error = signal<string | null>(null);
   userGameStatusMap = signal<Map<number, GameStatus>>(new Map());
   selectedGameId = signal<number | null>(null);
+  currentPage = signal(1);
+  hasMore = signal(true);
 
   ngOnInit() {
     this.loadUserGames();
-    this.loadGames('popular');
+    this.loadGames('popular', 1);
   }
 
   openGame(game: Game) {
@@ -57,7 +59,9 @@ export class Explore implements OnInit {
     this.activeTab.set(tab);
     if (tab !== 'search') {
       this.searchQuery.set('');
-      this.loadGames(tab);
+      this.currentPage.set(1);
+      this.hasMore.set(true);
+      this.loadGames(tab, 1);
     }
   }
 
@@ -66,27 +70,42 @@ export class Explore implements OnInit {
     if (!query) return;
 
     this.activeTab.set('search');
-    this.loadGames('search');
+    this.currentPage.set(1);
+    this.hasMore.set(true);
+    this.loadGames('search', 1);
   }
 
-  loadGames(tab: Tab) {
+  loadMore() {
+    if (this.loading() || !this.hasMore()) return;
+
+    const nextPage = this.currentPage() + 1;
+    this.currentPage.set(nextPage);
+    this.loadGames(this.activeTab(), nextPage);
+  }
+
+  loadGames(tab: Tab, page: number) {
     this.loading.set(true);
     this.error.set(null);
-    this.games.set([]);
+    if (page === 1) {
+      this.games.set([]);
+    }
 
     let request;
     switch (tab) {
       case 'popular':
-        request = this.gameService.getPopularGames();
+        request = this.gameService.getPopularGames(page);
         break;
       case 'new':
-        request = this.gameService.getNewGames();
+        request = this.gameService.getNewGames(page);
+        break;
+      case 'upcoming':
+        request = this.gameService.getUpcomingGames(page);
         break;
       case 'classics':
-        request = this.gameService.getClassicGames();
+        request = this.gameService.getClassicGames(page);
         break;
       case 'search':
-        request = this.gameService.searchGames(this.searchQuery());
+        request = this.gameService.searchGames(this.searchQuery(), page);
         break;
     }
 
@@ -94,7 +113,13 @@ export class Explore implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        this.games.set(response.results);
+        if (page === 1) {
+          this.games.set(response.results);
+        } else {
+          this.games.update((current) => [...current, ...response.results]);
+        }
+
+        this.hasMore.set(!!response.next);
         this.loading.set(false);
       },
       error: (err) => {

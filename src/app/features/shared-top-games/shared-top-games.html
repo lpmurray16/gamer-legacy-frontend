@@ -1,0 +1,64 @@
+<div class="container">
+  @if (loading()) {
+  <div class="loading">> ACCESSING ARCHIVES...</div>
+  } @else if (error()) {
+  <div class="error-state">
+    <h3>> ERROR</h3>
+    <p>{{ error() }}</p>
+    <a routerLink="/" class="btn btn-secondary">RETURN TO BASE</a>
+  </div>
+  } @else {
+  <div class="header">
+    <div class="header-top">
+      <div class="trophy-icon">🏆</div>
+      <div class="header-title">
+        <h1>My Top 30 Games</h1>
+        <p>{{ ownerName() }}'s Top 30 so far</p>
+      </div>
+    </div>
+
+    <div class="header-stats">
+      <div class="stat-item">
+        <span>🎮</span>
+        <span>{{ games().length }} games</span>
+      </div>
+      <div class="stat-item">
+        <span>📅</span>
+        <span>Shared recently</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="list-container">
+    @for (slot of slots(); track slot.rank) {
+    <div class="rank-slot">
+      <div class="rank-box" [class.rank-1]="slot.rank === 1" [class.rank-2]="slot.rank === 2"
+        [class.rank-3]="slot.rank === 3" [class.rank-other]="slot.rank > 3">
+        #{{ slot.rank }}
+      </div>
+
+      @if (slot.game) {
+      <div class="game-content">
+        <img [src]="slot.game['game_image']" alt="cover">
+        <div class="game-info">
+          <div class="game-title">{{ slot.game['game_name'] }}</div>
+          <div class="game-meta">
+            {{ slot.game['status'] || 'Played' }}
+          </div>
+        </div>
+
+        @if (slot.rank <= 3) { <div class="medal-icon">
+          {{ slot.rank === 1 ? '🥇' : (slot.rank === 2 ? '🥈' : '🥉') }}
+      </div>
+      }
+    </div>
+    } @else {
+    <div class="empty-slot">
+      [ VACANT ]
+    </div>
+    }
+  </div>
+  }
+</div>
+}
+</div>

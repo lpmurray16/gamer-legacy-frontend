@@ -4,8 +4,13 @@
       <h2>> TOP 30 RANKINGS</h2>
       <p style="margin: 0; color: var(--gray-400)">DEFINE YOUR LEGACY</p>
     </div>
-    <a routerLink="/home" class="btn btn-secondary btn-sm">
-      < BACK TO DASHBOARD</a>
+    <div style="display: flex; gap: 1rem;">
+      <button class="btn btn-primary btn-sm" (click)="copyShareLink()" [disabled]="processing()">
+        {{ shareBtnText() }}
+      </button>
+      <button routerLink="/home" class="btn btn-secondary btn-sm">
+        < BACK TO DASHBOARD</button>
+    </div>
   </div>
 
   <div class="rank-grid">

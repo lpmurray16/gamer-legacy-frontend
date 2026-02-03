@@ -87,4 +87,8 @@ export class GameDetailModal implements OnChanges {
   stopPropagation(event: Event) {
     event.stopPropagation();
   }
+
+  getYouTubeUrl(name: string): string {
+    return `https://www.youtube.com/results?search_query=${encodeURIComponent(name)}`;
+  }
 }

@@ -7,66 +7,18 @@
     </div>
   </div>
 
-  @if (loading()) {
+  @if (userGamesService.loading()) {
   <div class="loading">> SYNCING DATABASE...</div>
   } @else {
-  <div class="dashboard-grid">
-    <!-- PLAYING COLUMN -->
-    <div class="column">
-      <h3 class="col-header playing">> ACTIVE QUESTS ({{ playing().length }})</h3>
-      <div class="game-list">
-        @if (playing().length === 0) {
-        <div class="empty-state">NO ACTIVE MISSIONS</div>
-        }
-        @for (game of playing(); track game.id) {
-        <div class="mini-card" (click)="openGame(game)">
-          <img [src]="game['game_image']" alt="cover">
-          <div class="mini-info">
-            <h4>{{ game['game_name'] }}</h4>
-            <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
-          </div>
-        </div>
-        }
-      </div>
-    </div>
+  <nav class="tabs-nav">
+    <a routerLink="all" routerLinkActive="active">ALL</a>
+    <a routerLink="played" routerLinkActive="active">PLAYED</a>
+    <a routerLink="playing" routerLinkActive="active">PLAYING</a>
+    <a routerLink="watching" routerLinkActive="active">WATCHING</a>
+  </nav>
 
-    <!-- WATCHING COLUMN -->
-    <div class="column">
-      <h3 class="col-header watching">> WATCHLIST ({{ watching().length }})</h3>
-      <div class="game-list">
-        @if (watching().length === 0) {
-        <div class="empty-state">NO INTEL GATHERED</div>
-        }
-        @for (game of watching(); track game.id) {
-        <div class="mini-card" (click)="openGame(game)">
-          <img [src]="game['game_image']" alt="cover">
-          <div class="mini-info">
-            <h4>{{ game['game_name'] }}</h4>
-            <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
-          </div>
-        </div>
-        }
-      </div>
-    </div>
-
-    <!-- PLAYED COLUMN -->
-    <div class="column">
-      <h3 class="col-header played">> COMPLETED ({{ played().length }})</h3>
-      <div class="game-list">
-        @if (played().length === 0) {
-        <div class="empty-state">ARCHIVES EMPTY</div>
-        }
-        @for (game of played(); track game.id) {
-        <div class="mini-card" (click)="openGame(game)">
-          <img [src]="game['game_image']" alt="cover">
-          <div class="mini-info">
-            <h4>{{ game['game_name'] }}</h4>
-            <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
-          </div>
-        </div>
-        }
-      </div>
-    </div>
+  <div class="content-area">
+    <router-outlet></router-outlet>
   </div>
   }
 
@@ -78,8 +30,4 @@
       > MANAGE TOP 30
     </button>
   </div>
-
-  @if (selectedGameId()) {
-  <app-game-detail-modal [gameId]="selectedGameId()!" (close)="closeModal()" />
-  }
 </div>

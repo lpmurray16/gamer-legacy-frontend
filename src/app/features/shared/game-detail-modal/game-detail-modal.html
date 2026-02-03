@@ -54,7 +54,7 @@
 
         <div class="description">
           <h4>> MISSION BRIEFING <a class="read-more-action" (click)="showingFullDesc = !showingFullDesc">
-              {{ showingFullDesc ? 'SHOW LESS' : 'READ MORE' }}
+              {{ showingFullDesc ? '- SHOW LESS -' : '+ READ MORE +' }}
             </a></h4>
 
           <p [class.full-text]="showingFullDesc" class="truncate-text">{{ game()!.description_raw }}</p>
@@ -88,6 +88,7 @@
               @if (game()!.reddit_url) {
               <a [href]="game()!.reddit_url" target="_blank" class="btn-link">REDDIT</a>
               }
+              <a [href]="getYouTubeUrl(game()!.name)" target="_blank" class="btn-link">YOUTUBE</a>
             </div>
           </div>
         </div>
