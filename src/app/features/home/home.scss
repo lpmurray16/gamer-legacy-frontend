@@ -3,15 +3,16 @@
   margin: 0 auto;
 }
 
-.header-card {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  background: var(--surface);
-  border: var(--border-width) solid var(--text);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--primary);
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
 }
 
 .user-info {

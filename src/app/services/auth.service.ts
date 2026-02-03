@@ -56,6 +56,7 @@ export class AuthService {
 
   logout() {
     this.pb.authStore.clear();
+    this._currentUser.set(null);
     this.router.navigate(['/sign-in']);
   }
 }

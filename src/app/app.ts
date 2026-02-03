@@ -1,6 +1,7 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { environment } from '../environments/environment';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +12,10 @@ import { environment } from '../environments/environment';
 export class App implements OnInit {
   protected readonly title = signal('gamer-legacy-frontend');
   protected isMenuOpen = signal(false);
+  authService = inject(AuthService);
 
   toggleMenu() {
-    this.isMenuOpen.update(value => !value);
+    this.isMenuOpen.update((value) => !value);
   }
 
   closeMenu() {
@@ -22,6 +24,8 @@ export class App implements OnInit {
 
   ngOnInit() {
     console.log('Environment Production:', environment.production);
-    // console.log('RAWG API Key:', environment.rawgApiKey);
+  }
+  logout() {
+    this.authService.logout();
   }
 }

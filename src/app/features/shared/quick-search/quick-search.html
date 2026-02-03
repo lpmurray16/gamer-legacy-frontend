@@ -1,0 +1,16 @@
+<div class="search-container">
+  @if (isOpen()) {
+    <input 
+      type="text" 
+      placeholder="SEARCH..." 
+      [value]="userGamesService.searchQuery()"
+      (input)="onSearch($event)"
+      class="search-input"
+      autofocus
+    >
+  }
+  
+  <button class="search-btn" (click)="toggleSearch()" [class.active]="isOpen()">
+    {{ isOpen() ? 'x' : 'SEARCH' }}
+  </button>
+</div>

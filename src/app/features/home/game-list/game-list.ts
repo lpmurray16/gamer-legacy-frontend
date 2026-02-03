@@ -9,26 +9,36 @@ import { UpperCasePipe } from '@angular/common';
   selector: 'app-game-list',
   imports: [GameDetailModal, UpperCasePipe],
   templateUrl: './game-list.html',
-  styleUrl: './game-list.css'
+  styleUrl: './game-list.css',
 })
 export class GameList {
   userGamesService = inject(UserGamesService);
   route = inject(ActivatedRoute);
 
   filter = signal<string>('All');
-  
+
   games = computed(() => {
     const allGames = this.userGamesService.games();
     const filterVal = this.filter();
-    
-    if (filterVal === 'All') return allGames;
-    return allGames.filter(g => g['status'] === filterVal);
+    const query = this.userGamesService.searchQuery().toLowerCase();
+
+    let filtered = allGames;
+
+    if (filterVal !== 'All') {
+      filtered = filtered.filter((g) => g['status'] === filterVal);
+    }
+
+    if (query) {
+      filtered = filtered.filter((g) => g['game_name'].toLowerCase().includes(query));
+    }
+
+    return filtered;
   });
 
   selectedGameId = signal<number | null>(null);
 
   constructor() {
-    this.route.data.subscribe(data => {
+    this.route.data.subscribe((data) => {
       this.filter.set(data['filter'] || 'All');
     });
   }

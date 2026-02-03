@@ -24,12 +24,13 @@ export class UserGamesService {
   // State signals
   games = signal<RecordModel[]>([]);
   loading = signal<boolean>(false);
+  searchQuery = signal<string>('');
 
   private get pb() {
     return this.authService.pb;
   }
 
-  loadGames() {
+  loadGames(sort: string = 'game_name') {
     this.loading.set(true);
     const userId = this.authService.currentUser()?.id;
     if (!userId) {
@@ -41,7 +42,7 @@ export class UserGamesService {
       .collection('user_games')
       .getFullList({
         filter: `user = "${userId}"`,
-        sort: '-created',
+        sort: sort,
       })
       .then((games) => {
         this.games.set(games);
@@ -60,7 +61,7 @@ export class UserGamesService {
     return from(
       this.pb.collection('user_games').getFullList({
         filter: `user = "${userId}"`,
-        sort: '-created',
+        sort: 'game_name',
       }),
     ).pipe(tap((games) => this.games.set(games)));
   }

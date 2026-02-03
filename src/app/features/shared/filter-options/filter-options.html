@@ -1,0 +1,16 @@
+<div class="filter-container">
+    <button class="filter-btn" (click)="toggleMenu()">
+        SORT GAMES ▾
+    </button>
+
+    @if (isMenuOpen()) {
+    <div class="menu-overlay" (click)="closeMenu()"></div>
+    <div class="filter-menu">
+        <button (click)="sortGames('game_name')">A-Z</button>
+        <button (click)="sortGames('-game_name')">Z-A</button>
+        <button (click)="sortGames('-created')">Newest Added</button>
+        <button (click)="sortGames('created')">Oldest Added</button>
+        <button (click)="sortGames('rank')">Rank</button>
+    </div>
+    }
+</div>

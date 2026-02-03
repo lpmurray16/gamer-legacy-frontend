@@ -1,9 +1,9 @@
 <div class="container">
-  <div class="card header-card">
-    <h2>> DASHBOARD: {{ authService.currentUser()?.['name'] || 'PLAYER' }}</h2>
-    <div class="user-info">
-      <span class="id-badge">ID: {{ authService.currentUser()?.id }}</span>
-      <button class="btn btn-secondary btn-sm" (click)="logout()">LOGOUT</button>
+  <div class="header">
+    <h2>> Hello: {{ authService.currentUser()?.['name'] || 'PLAYER' }}</h2>
+    <div class="d-flex align-center justify-center gap-2">
+      <app-quick-search></app-quick-search>
+      <app-filter-options></app-filter-options>
     </div>
   </div>
 
