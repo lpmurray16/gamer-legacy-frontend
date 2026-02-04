@@ -1,0 +1,55 @@
+<div class="filter-container">
+    <button class="filter-btn" (click)="toggleMenu()">
+        FILTERS ▾
+    </button>
+
+    @if (isMenuOpen()) {
+    <div class="menu-overlay" (click)="closeMenu()"></div>
+    <div class="filter-menu">
+        <div class="filter-section">
+            <h3>Sort By</h3>
+            <div class="sort-options">
+                @for (opt of orderingOptions; track opt.value) {
+                <button class="sort-chip" [class.active]="selectedOrdering() === opt.value"
+                    (click)="setOrdering(opt.value)">
+                    {{ opt.label }}
+                </button>
+                }
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Genres</h3>
+            <div class="options-grid">
+                @for (genre of genres(); track genre.id) {
+                <label class="custom-checkbox">
+                    <input type="checkbox" [checked]="selectedGenres().includes(genre.id)"
+                        (change)="toggleGenre(genre.id)">
+                    <span class="checkmark"></span>
+                    <span class="label-text">{{ genre.name }}</span>
+                </label>
+                }
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Platforms</h3>
+            <div class="options-grid">
+                @for (platform of platforms(); track platform.id) {
+                <label class="custom-checkbox">
+                    <input type="checkbox" [checked]="selectedPlatforms().includes(platform.id)"
+                        (change)="togglePlatform(platform.id)">
+                    <span class="checkmark"></span>
+                    <span class="label-text">{{ platform.name }}</span>
+                </label>
+                }
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="clear-btn" (click)="clearFilters()">Clear All</button>
+            <button class="done-btn" (click)="closeMenu()">Done</button>
+        </div>
+    </div>
+    }
+</div>

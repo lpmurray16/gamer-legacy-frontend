@@ -1,16 +1,17 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Game, GameService } from '../../services/game';
+import { Game, GameService, GameFilters } from '../../services/game';
 import { GameCard } from './game-card/game-card';
 import { UserGamesService, GameStatus } from '../../services/user-games';
 import { GameDetailModal } from '../shared/game-detail-modal/game-detail-modal';
+import { ExploreFilters } from './explore-filters/explore-filters';
 
 type Tab = 'popular' | 'new' | 'upcoming' | 'classics' | 'search';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [GameCard, GameDetailModal, FormsModule],
+  imports: [GameCard, GameDetailModal, FormsModule, ExploreFilters],
   templateUrl: './explore.html',
   styleUrl: './explore.css',
 })
@@ -27,6 +28,7 @@ export class Explore implements OnInit {
   selectedGameId = signal<number | null>(null);
   currentPage = signal(1);
   hasMore = signal(true);
+  currentFilters = signal<GameFilters>({});
 
   ngOnInit() {
     this.loadUserGames();
@@ -75,6 +77,13 @@ export class Explore implements OnInit {
     this.loadGames('search', 1);
   }
 
+  onFiltersChanged(filters: GameFilters) {
+    this.currentFilters.set(filters);
+    this.currentPage.set(1);
+    this.hasMore.set(true);
+    this.loadGames(this.activeTab(), 1);
+  }
+
   loadMore() {
     if (this.loading() || !this.hasMore()) return;
 
@@ -90,22 +99,24 @@ export class Explore implements OnInit {
       this.games.set([]);
     }
 
+    const filters = this.currentFilters();
+
     let request;
     switch (tab) {
       case 'popular':
-        request = this.gameService.getPopularGames(page);
+        request = this.gameService.getPopularGames(page, filters);
         break;
       case 'new':
-        request = this.gameService.getNewGames(page);
+        request = this.gameService.getNewGames(page, filters);
         break;
       case 'upcoming':
-        request = this.gameService.getUpcomingGames(page);
+        request = this.gameService.getUpcomingGames(page, filters);
         break;
       case 'classics':
-        request = this.gameService.getClassicGames(page);
+        request = this.gameService.getClassicGames(page, filters);
         break;
       case 'search':
-        request = this.gameService.searchGames(this.searchQuery(), page);
+        request = this.gameService.searchGames(this.searchQuery(), page, filters);
         break;
     }
 

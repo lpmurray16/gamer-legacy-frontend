@@ -10,7 +10,19 @@ export interface Game {
   background_image: string;
   rating: number;
   metacritic: number;
-  platforms: { platform: { name: string } }[];
+  platforms: { platform: { id: number; name: string; slug: string } }[];
+}
+
+export interface Genre {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface Platform {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 export interface GameDetails extends Game {
@@ -25,11 +37,22 @@ export interface GameDetails extends Game {
   esrb_rating: { name: string };
 }
 
-export interface GameResponse {
+export interface ListResponse<T> {
   count: number;
   next: string;
   previous: string;
-  results: Game[];
+  results: T[];
+}
+
+export type GameResponse = ListResponse<Game>;
+
+export interface GameFilters {
+  genres?: number[];
+  platforms?: number[];
+  ordering?: string;
+  dates?: string;
+  search?: string;
+  metacritic?: string;
 }
 
 @Injectable({
@@ -37,39 +60,76 @@ export interface GameResponse {
 })
 export class GameService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://api.rawg.io/api/games';
+  private apiUrl = 'https://api.rawg.io/api';
   private apiKey = environment.rawgApiKey;
 
   private getBaseParams(): HttpParams {
     return new HttpParams().set('key', this.apiKey);
   }
 
-  getPopularGames(page: number = 1): Observable<GameResponse> {
-    const params = this.getBaseParams()
-      .set('ordering', '-added') // Popularity by most added to libraries
-      .set('page_size', '12')
-      .set('page', page.toString());
-
-    return this.http.get<GameResponse>(this.apiUrl, { params });
+  getGenres(): Observable<ListResponse<Genre>> {
+    const params = this.getBaseParams();
+    return this.http.get<ListResponse<Genre>>(`${this.apiUrl}/genres`, { params });
   }
 
-  getNewGames(page: number = 1): Observable<GameResponse> {
+  getPlatforms(): Observable<ListResponse<Platform>> {
+    const params = this.getBaseParams();
+    return this.http.get<ListResponse<Platform>>(`${this.apiUrl}/platforms`, { params });
+  }
+
+  getGames(filters: GameFilters = {}, page: number = 1): Observable<GameResponse> {
+    let params = this.getBaseParams().set('page_size', '12').set('page', page.toString());
+
+    if (filters.genres?.length) {
+      params = params.set('genres', filters.genres.join(','));
+    }
+    if (filters.platforms?.length) {
+      params = params.set('platforms', filters.platforms.join(','));
+    }
+    if (filters.ordering) {
+      params = params.set('ordering', filters.ordering);
+    }
+    if (filters.dates) {
+      params = params.set('dates', filters.dates);
+    }
+    if (filters.search) {
+      params = params.set('search', filters.search);
+    }
+    if (filters.metacritic) {
+      params = params.set('metacritic', filters.metacritic);
+    }
+
+    return this.http.get<GameResponse>(`${this.apiUrl}/games`, { params });
+  }
+
+  getPopularGames(page: number = 1, filters?: GameFilters): Observable<GameResponse> {
+    return this.getGames(
+      {
+        ...filters,
+        ordering: filters?.ordering || '-added',
+      },
+      page,
+    );
+  }
+
+  getNewGames(page: number = 1, filters?: GameFilters): Observable<GameResponse> {
     const currentDate = new Date();
     const lastYear = new Date();
     lastYear.setFullYear(currentDate.getFullYear() - 1);
 
     const dateString = `${lastYear.toISOString().split('T')[0]},${currentDate.toISOString().split('T')[0]}`;
 
-    const params = this.getBaseParams()
-      .set('dates', dateString)
-      .set('ordering', '-released')
-      .set('page_size', '12')
-      .set('page', page.toString());
-
-    return this.http.get<GameResponse>(this.apiUrl, { params });
+    return this.getGames(
+      {
+        ...filters,
+        dates: filters?.dates || dateString,
+        ordering: filters?.ordering || '-released',
+      },
+      page,
+    );
   }
 
-  getUpcomingGames(page: number = 1): Observable<GameResponse> {
+  getUpcomingGames(page: number = 1, filters?: GameFilters): Observable<GameResponse> {
     const currentDate = new Date();
     const nextYear = new Date();
     nextYear.setFullYear(currentDate.getFullYear() + 1);
@@ -79,36 +139,39 @@ export class GameService {
 
     const dateString = `${tomorrow.toISOString().split('T')[0]},${nextYear.toISOString().split('T')[0]}`;
 
-    const params = this.getBaseParams()
-      .set('dates', dateString)
-      .set('ordering', '-added')
-      .set('page_size', '12')
-      .set('page', page.toString());
-
-    return this.http.get<GameResponse>(this.apiUrl, { params });
+    return this.getGames(
+      {
+        ...filters,
+        dates: filters?.dates || dateString,
+        ordering: filters?.ordering || '-added',
+      },
+      page,
+    );
   }
 
-  getClassicGames(page: number = 1): Observable<GameResponse> {
-    const params = this.getBaseParams()
-      .set('dates', '1980-01-01,2000-12-31')
-      .set('ordering', '-metacritic') // Highest rated classics
-      .set('page_size', '12')
-      .set('page', page.toString());
-
-    return this.http.get<GameResponse>(this.apiUrl, { params });
+  getClassicGames(page: number = 1, filters?: GameFilters): Observable<GameResponse> {
+    return this.getGames(
+      {
+        ...filters,
+        dates: filters?.dates || '1980-01-01,2000-12-31',
+        ordering: filters?.ordering || '-metacritic',
+      },
+      page,
+    );
   }
 
-  searchGames(query: string, page: number = 1): Observable<GameResponse> {
-    const params = this.getBaseParams()
-      .set('search', query)
-      .set('page_size', '12')
-      .set('page', page.toString());
-
-    return this.http.get<GameResponse>(this.apiUrl, { params });
+  searchGames(query: string, page: number = 1, filters?: GameFilters): Observable<GameResponse> {
+    return this.getGames(
+      {
+        ...filters,
+        search: query,
+      },
+      page,
+    );
   }
 
   getGameDetails(id: number): Observable<GameDetails> {
     const params = this.getBaseParams();
-    return this.http.get<GameDetails>(`${this.apiUrl}/${id}`, { params });
+    return this.http.get<GameDetails>(`${this.apiUrl}/games/${id}`, { params });
   }
 }
