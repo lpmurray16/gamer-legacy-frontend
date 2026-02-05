@@ -9,9 +9,9 @@
       <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
       <img [src]="game['game_image']" alt="cover">
       <div class="card-info">
-        <h5>{{ game['game_name'] }}</h5>
+        <h4>{{ game['game_name'] }}</h4>
         @if (game['status'] === 'Watching' && game['released']) {
-        <div class="release-date">{{ game['released'] | date:'mediumDate' }}</div>
+        <div class="release-date">{{ game['released'] | date:'mediumDate':'UTC' }}</div>
         }
         <span class="status-badge" [class]="game['status'].toLowerCase()">{{ game['status'] }}</span>
       </div>

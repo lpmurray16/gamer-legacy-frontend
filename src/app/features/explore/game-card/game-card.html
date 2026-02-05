@@ -25,7 +25,7 @@
 
     <div class="card-meta">
       @if (userStatus === 'Watching') {
-      <span>{{ game.released | date:'mediumDate' }}</span>
+      <span>{{ game.released | date:'mediumDate':'UTC' }}</span>
       } @else {
       <span></span>
       }

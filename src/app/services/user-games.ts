@@ -136,7 +136,7 @@ export class UserGamesService {
       game_name: game.name,
       game_image: game.background_image,
       status: status,
-      released: game.released ? new Date(game.released).toISOString() : undefined,
+      released: game.released,
     };
 
     return this.pb.collection('user_games').create(data);

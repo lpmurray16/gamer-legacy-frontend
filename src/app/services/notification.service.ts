@@ -99,7 +99,7 @@ export class NotificationService {
             releaseDateStr = details.released;
             // Update user_game record to self-heal data
             await this.pb.collection('user_games').update(game.id, {
-              released: new Date(releaseDateStr).toISOString(),
+              released: releaseDateStr,
             });
           }
         } catch (e) {
