@@ -24,7 +24,11 @@
     </div>
 
     <div class="card-meta">
+      @if (userStatus === 'Watching') {
       <span>{{ game.released | date:'mediumDate' }}</span>
+      } @else {
+      <span></span>
+      }
       <div style="display: flex; gap: 0.5rem; align-items: center;">
         @if (game.metacritic) {
         <span class="metacritic" title="Metascore">{{ game.metacritic }}</span>

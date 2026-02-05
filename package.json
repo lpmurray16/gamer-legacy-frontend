@@ -7,7 +7,8 @@
     "start": "npm run config-env -- dev && ng serve",
     "build": "npm run config-env -- prod && ng build",
     "watch": "npm run config-env -- dev && ng build --watch --configuration development",
-    "test": "npm run config-env -- dev && ng test"
+    "test": "npm run config-env -- dev && ng test",
+    "local": "nvm use 22 && npm run config-env -- dev && ng serve"
   },
   "prettier": {
     "printWidth": 100,

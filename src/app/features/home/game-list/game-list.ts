@@ -3,11 +3,11 @@ import { UserGamesService } from '../../../services/user-games';
 import { RecordModel } from 'pocketbase';
 import { GameDetailModal } from '../../shared/game-detail-modal/game-detail-modal';
 import { ActivatedRoute } from '@angular/router';
-import { UpperCasePipe } from '@angular/common';
+import { UpperCasePipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-game-list',
-  imports: [GameDetailModal, UpperCasePipe],
+  imports: [GameDetailModal, UpperCasePipe, DatePipe],
   templateUrl: './game-list.html',
   styleUrl: './game-list.css',
 })

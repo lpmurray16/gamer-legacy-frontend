@@ -13,6 +13,7 @@ export interface UserGame {
   game_image: string;
   status: GameStatus;
   rank?: number;
+  released?: string;
 }
 
 @Injectable({
@@ -25,6 +26,7 @@ export class UserGamesService {
   games = signal<RecordModel[]>([]);
   loading = signal<boolean>(false);
   searchQuery = signal<string>('');
+  private _currentSort: string | null = null;
 
   private get pb() {
     return this.authService.pb;
@@ -49,6 +51,7 @@ export class UserGamesService {
         this.loading.set(false);
       })
       .catch((err) => {
+        if (err.isAbort) return;
         console.error('Failed to load user games', err);
         this.loading.set(false);
       });
@@ -133,6 +136,7 @@ export class UserGamesService {
       game_name: game.name,
       game_image: game.background_image,
       status: status,
+      released: game.released ? new Date(game.released).toISOString() : undefined,
     };
 
     return this.pb.collection('user_games').create(data);

@@ -1,22 +1,25 @@
 <div class="game-list-container">
   @if (games().length === 0) {
-    <div class="empty-state">NO MISSIONS FOUND IN {{ filter() | uppercase }}</div>
+  <div class="empty-state">NO MISSIONS FOUND IN {{ filter() | uppercase }}</div>
   }
 
   <div class="games-grid">
     @for (game of games(); track game.id) {
-      <div class="game-card" (click)="openGame(game)">
-        <img [src]="game['game_image']" alt="cover">
-        <div class="card-info">
-          <h4>{{ game['game_name'] }}</h4>
-          <span class="status-badge" [class]="game['status'].toLowerCase()">{{ game['status'] }}</span>
-          <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
-        </div>
+    <div class="game-card" (click)="openGame(game)">
+      <button (click)="$event.stopPropagation(); removeGame(game.id)" class="btn-remove">x</button>
+      <img [src]="game['game_image']" alt="cover">
+      <div class="card-info">
+        <h5>{{ game['game_name'] }}</h5>
+        @if (game['status'] === 'Watching' && game['released']) {
+        <div class="release-date">{{ game['released'] | date:'mediumDate' }}</div>
+        }
+        <span class="status-badge" [class]="game['status'].toLowerCase()">{{ game['status'] }}</span>
       </div>
+    </div>
     }
   </div>
 
   @if (selectedGameId()) {
-    <app-game-detail-modal [gameId]="selectedGameId()!" (close)="closeModal()" />
+  <app-game-detail-modal [gameId]="selectedGameId()!" (close)="closeModal()" />
   }
 </div>
