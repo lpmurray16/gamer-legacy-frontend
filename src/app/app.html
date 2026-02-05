@@ -4,15 +4,6 @@
     <span class="logo-text-mobile">GL</span>
   </h1>
 
-  <nav [class.open]="isMenuOpen()">
-    <a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">DASHBOARD</a>
-    <a routerLink="/explore" routerLinkActive="active" (click)="closeMenu()">EXPLORE</a>
-    <a routerLink="/top-games" routerLinkActive="active" (click)="closeMenu()">TOP 30</a>
-    @if (authService.isAuthenticated()) {
-    <a class="btn btn-secondary btn-sm" (click)="logout()">LOGOUT</a>
-    }
-  </nav>
-
   <div class="header-right">
     @if (authService.isAuthenticated()) {
     <div class="notification-wrapper">
@@ -53,6 +44,15 @@
       ☰
     </button>
   </div>
+
+  <nav [class.open]="isMenuOpen()">
+    <a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">DASHBOARD</a>
+    <a routerLink="/explore" routerLinkActive="active" (click)="closeMenu()">EXPLORE</a>
+    <a routerLink="/top-games" routerLinkActive="active" (click)="closeMenu()">TOP 30</a>
+    @if (authService.isAuthenticated()) {
+    <a class="btn btn-secondary btn-sm" (click)="logout()">LOGOUT</a>
+    }
+  </nav>
 
 </header>
 
