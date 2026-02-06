@@ -117,7 +117,15 @@ export class UserGamesService {
 
       // 2. If no games found OR expand failed, try to fetch user directly
       // This handles the case where user exists but has no games, OR expand is restricted but users collection is readable.
-      const user = await this.pb.collection('users').getFirstListItem(`share_code="${code}"`);
+      let user: RecordModel;
+      try {
+        user = await this.pb.collection('users').getFirstListItem(`share_code="${code}"`);
+      } catch (userErr) {
+        console.warn(
+          'Could not find user by share code. This might be due to missing "View" permissions on the "users" collection.',
+        );
+        throw userErr;
+      }
 
       // If we are here, we found the user but they might have 0 games (or we fetched them in step 1 but expanded failed)
       // If games were already fetched in step 1, use them.
