@@ -98,19 +98,44 @@ export class UserGamesService {
   }
 
   async getGamesByShareCode(code: string): Promise<{ user: RecordModel; games: RecordModel[] }> {
-    // 1. Find user by share_code
-    // Note: Assuming 'share_code' is unique
-    const user = await this.pb.collection('users').getFirstListItem(`share_code="${code}"`);
+    try {
+      // 1. Try to fetch games directly using relation filter (bypass users collection read if possible)
+      const games = await this.pb.collection('user_games').getFullList({
+        filter: `user.share_code = "${code}" && rank > 0`,
+        sort: 'rank',
+        expand: 'user',
+      });
 
-    if (!user) throw new Error('User not found');
+      if (games.length > 0) {
+        // We found games!
+        const user = games[0].expand?.['user'];
+        // If we got user details via expand, great. If not (permissions?), use a placeholder or try to fetch user.
+        if (user) {
+          return { user, games };
+        }
+      }
 
-    // 2. Fetch their games (ranking only)
-    const games = await this.pb.collection('user_games').getFullList({
-      filter: `user = "${user.id}" && rank > 0`,
-      sort: 'rank',
-    });
+      // 2. If no games found OR expand failed, try to fetch user directly
+      // This handles the case where user exists but has no games, OR expand is restricted but users collection is readable.
+      const user = await this.pb.collection('users').getFirstListItem(`share_code="${code}"`);
 
-    return { user, games };
+      // If we are here, we found the user but they might have 0 games (or we fetched them in step 1 but expanded failed)
+      // If games were already fetched in step 1, use them.
+      if (games.length > 0) {
+        return { user, games };
+      }
+
+      // If games were not found in step 1 (because list was empty), fetch them now using user.id
+      const gamesRetry = await this.pb.collection('user_games').getFullList({
+        filter: `user = "${user.id}" && rank > 0`,
+        sort: 'rank',
+      });
+
+      return { user, games: gamesRetry };
+    } catch (err) {
+      console.error('Error fetching shared games:', err);
+      throw new Error('Failed to load shared rankings');
+    }
   }
 
   async addGameToCollection(game: Game, status: GameStatus): Promise<RecordModel> {
